@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,6 +102,20 @@ public class NewsService {
                 .build();
 
         newsRepo.addToHash(Utility.articlesRedisKey, String.valueOf(a.getId()), jObject.toString());
+    }
+
+    public String getSavedArticleFromRedis(String id) {
+        Set<String> articlesSaved = newsRepo.getAllFields(Utility.articlesRedisKey);
+
+        String articleFound = null;
+
+        for(String articleID: articlesSaved) {
+            if (articleID.equals(id)) {
+                String articleToReturn = newsRepo.getFieldValue(Utility.articlesRedisKey, articleID);
+                articleFound = articleToReturn;
+            }
+        }
+        return articleFound;
     }
 }
  
