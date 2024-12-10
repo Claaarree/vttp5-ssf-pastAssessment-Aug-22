@@ -1,11 +1,13 @@
 package sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.model;
 
+import java.util.Date;
+
 public class Article {
     private Integer id;
-    private Long publishedOn;
+    private Date publishedOn;
     private String title;
     private String url;
-    private String imageURl;
+    private String imageUrl;
     private String body;
     private String tags;
     private String categories;
@@ -13,13 +15,13 @@ public class Article {
     public Article() {
     }
 
-    public Article(Integer id, Long publishedOn, String title, String url, String imageURl, String body, String tags,
+    public Article(Integer id, Date publishedOn, String title, String url, String imageUrl, String body, String tags,
             String categories) {
         this.id = id;
         this.publishedOn = publishedOn;
         this.title = title;
         this.url = url;
-        this.imageURl = imageURl;
+        this.imageUrl = imageUrl;
         this.body = body;
         this.tags = tags;
         this.categories = categories;
@@ -33,11 +35,11 @@ public class Article {
         this.id = id;
     }
 
-    public Long getPublishedOn() {
+    public Date getPublishedOn() {
         return publishedOn;
     }
 
-    public void setPublishedOn(Long publishedOn) {
+    public void setPublishedOn(Date publishedOn) {
         this.publishedOn = publishedOn;
     }
 
@@ -57,12 +59,12 @@ public class Article {
         this.url = url;
     }
 
-    public String getImageURl() {
-        return imageURl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImageURl(String imageURl) {
-        this.imageURl = imageURl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getBody() {

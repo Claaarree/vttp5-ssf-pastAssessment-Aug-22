@@ -2,8 +2,11 @@ package sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +18,16 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.model.Article;
+import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.model.ArticleList;
+import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.repo.HashRepo;
 import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.utility.Utility;
 
 @Service
 public class NewsService {
 
+    @Autowired
+    HashRepo newsRepo;
+    
     RestTemplate template = new RestTemplate();
     
     public List<Article> getAllArticles() {
@@ -41,7 +49,8 @@ public class NewsService {
         for (int i = 0; i < data.size(); i++) {
             JsonObject news = data.getJsonObject(i);
             Integer id = news.getInt("ID");
-            Long publishedOn = news.getJsonNumber("PUBLISHED_ON").longValueExact();
+            Long publishedOnLong = news.getJsonNumber("PUBLISHED_ON").longValueExact();
+            Date publishedOnDate = new Date(publishedOnLong * 1000);
             String title = news.getString("TITLE");
             String url = news. getString("URL");
             String imageUrl = news.getString("IMAGE_URL");
@@ -59,11 +68,39 @@ public class NewsService {
             sb.deleteCharAt(sb.lastIndexOf("|"));
             String categories = sb.toString();
 
-            Article a = new Article(id, publishedOn, title, url, imageUrl, body, tags, categories);
+            Article a = new Article(id, publishedOnDate, title, url, imageUrl, body, tags, categories);
             articlesList.add(a);
         }
 
         return articlesList;
+    }
+
+    public void saveArticles(Set<String> articlesToSave, ArticleList articles) {
+        List<Article> articlesList = articles.getArticlesList();
+        
+        for (String id : articlesToSave) {
+            for (Article a : articlesList) {
+                if (String.valueOf(a.getId()).equals(id)) {
+                    addToRedis(a);
+                }
+            }
+        }
+
+    }
+
+    public void addToRedis(Article a) {
+        JsonObject jObject = Json.createObjectBuilder()
+                .add("ID", a.getId())
+                .add("PUBLISHED_ON", a.getPublishedOn().getTime()/1000)
+                .add("TITLE", a.getTitle())
+                .add("URL", a.getUrl())
+                .add("IMAGE_URL", a.getImageUrl())
+                .add("BODY", a.getBody())
+                .add("TAGS", a.getTags())
+                .add("CATEGORIES", a.getCategories())
+                .build();
+
+        newsRepo.addToHash(Utility.articlesRedisKey, String.valueOf(a.getId()), jObject.toString());
     }
 }
  

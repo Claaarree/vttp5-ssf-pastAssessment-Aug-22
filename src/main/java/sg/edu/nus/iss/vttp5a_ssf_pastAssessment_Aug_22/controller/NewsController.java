@@ -4,23 +4,40 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpSession;
 import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.model.Article;
+import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.model.ArticleList;
 import sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.service.NewsService;
 
 @Controller
-@RequestMapping("/news")
+@RequestMapping("/articles")
 public class NewsController {
     
     @Autowired
     NewsService newsService;
 
-    @ResponseBody
-    @GetMapping
-    public List<Article> getAllArticles() {
-        return newsService.getAllArticles();
+    @GetMapping(produces = "text/html")
+    public String getAllArticles(Model model, HttpSession session) {
+        List<Article> articlesList = newsService.getAllArticles();
+        ArticleList articleListObject = new ArticleList(articlesList);
+        model.addAttribute("articles", articlesList);
+        session.setAttribute("articles", articleListObject);
+        return "articles";
+    }
+
+    @PostMapping
+    public String handleSaveArticles(@RequestBody MultiValueMap<String, String> articlesToSave, HttpSession session) {
+        
+        newsService.saveArticles(articlesToSave.keySet(), (ArticleList)session.getAttribute("articles"));
+        
+        return "redirect:/articles";
     }
 }
