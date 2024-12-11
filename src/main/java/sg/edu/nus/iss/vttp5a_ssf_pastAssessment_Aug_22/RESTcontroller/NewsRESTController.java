@@ -3,10 +3,8 @@ package sg.edu.nus.iss.vttp5a_ssf_pastAssessment_Aug_22.RESTcontroller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +31,6 @@ public class NewsRESTController {
 
         MultiValueMap<String, String> headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-
-        // ResponseEntity<String> test = ResponseEntity.
-        // RequestEntity<String> testtest = RequestEntity.get(null).he
 
         Optional<String> articleFound = Optional.ofNullable(newsService.getSavedArticleFromRedis(id));
         
