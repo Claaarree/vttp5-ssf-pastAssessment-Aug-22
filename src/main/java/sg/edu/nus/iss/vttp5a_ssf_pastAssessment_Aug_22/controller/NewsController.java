@@ -33,9 +33,13 @@ public class NewsController {
 
     @PostMapping
     public String handleSaveArticles(@RequestBody MultiValueMap<String, String> articlesToSave, HttpSession session) {
+
+        // List<String> savedArticles = articlesToSave.get("articlesToSave");
+        // then continue to process the data in the List
         
         newsService.saveArticles(articlesToSave.keySet(), (ArticleList)session.getAttribute("articles"));
-        
+        // System.out.println(articlesToSave.values());
+        // value is just "on"
         return "redirect:/articles";
     }
 }

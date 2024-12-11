@@ -25,6 +25,8 @@
                     <p>Tags: <span th:utext="${a.tags}"></span></p>             
                     <p>Published: <span th:utext="${#dates.format(a.publishedOn, 'yyyy/MM/dd')}"></span>   
                         <a th:href="@{${a.url}}">Link</a>  
+                        <!-- can use th:value=${a.id} name="articlesToSave"-->
+                         <!-- con't in controller -->
                         <input type="checkbox" id="save" th:name="${a.id}"><label for="save">Save</label>
                     </p>
                 </div>
