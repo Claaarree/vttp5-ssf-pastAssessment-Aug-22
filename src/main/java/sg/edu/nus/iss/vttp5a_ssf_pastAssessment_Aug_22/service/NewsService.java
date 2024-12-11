@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +28,16 @@ public class NewsService {
 
     @Autowired
     HashRepo newsRepo;
+
+    @Value("${crypto.news.api.key}")
+    private String apiKey;
     
     RestTemplate template = new RestTemplate();
     
     public List<Article> getAllArticles() {
         RequestEntity<Void> req = RequestEntity
                 .get(Utility.cryptoNewsUrl)
-                .header("Authorization", "Bearer " + Utility.apiKey)
+                .header("Authorization", "Bearer " + apiKey)
                 .accept(MediaType.APPLICATION_JSON)
                 .build();
 
